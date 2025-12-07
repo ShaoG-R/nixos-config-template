@@ -1,0 +1,70 @@
+name: Release System Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version (e.g. v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        host: [tohu, hyperv]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Disko Image
+        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.diskoImages
+
+      - name: Prepare and Compress Image
+        run: |
+          cp result/*.raw main.raw
+          tar -I "zstd -19 -T0" -cf ${{ matrix.host }}.tar.zst main.raw
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-${{ matrix.host }}
+          path: ${{ matrix.host }}.tar.zst
+          if-no-files-found: error
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: image-*
+          merge-multiple: true
+
+      - name: Generate Release Body
+        run: |
+          echo "System Raw Images Release" > release_body.md
+          echo "" >> release_body.md
+          echo "**Artifacts:**" >> release_body.md
+          for f in *.tar.zst; do
+            echo "- \`$f\`" >> release_body.md
+          done
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version || github.ref_name }}
+          name: Release ${{ inputs.version || github.ref_name }}
+          body_path: release_body.md
+          files: "*.tar.zst"
+          generate_release_notes: true

@@ -1,0 +1,40 @@
+name: Build NixOS Configuration
+
+on:
+  push:
+    branches:
+      - main
+      - rp
+    paths-ignore:
+      - 'README.md'
+      - 'docs/*'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'docs/*'
+  workflow_dispatch:
+
+jobs:
+  check-configuration:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        host: [tohu, hyperv]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: VM Test (tohu)
+        if: matrix.host == 'tohu'
+        run: nix run github:nix-community/nixos-anywhere -- --flake .#tohu --vm-test
+
+      - name: Build Disko Images (hyperv)
+        if: matrix.host == 'hyperv'
+        run: nix build .#nixosConfigurations.hyperv.config.system.build.diskoImages
