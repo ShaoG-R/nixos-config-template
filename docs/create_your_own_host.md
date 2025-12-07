@@ -24,21 +24,21 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 我们需要先将配置仓库下载到本地，以便后续基于模板创建您的专属配置。
 
 **选项一：配置自己的 Git Repo (推荐)**
-1. Fork 本仓库: [https://github.com/ShaoG-R/nixos-config](https://github.com/ShaoG-R/nixos-config)
+1. Fork 本仓库: [https://github.com/ShaoG-R/nixos-config-template](https://github.com/ShaoG-R/nixos-config-template)
 2. 在本地配置好 Git 环境并 clone 你的 Fork：
    ```bash
-   git clone git@github.com:<你的用户名>/nixos-config.git
-   cd nixos-config
+   git clone git@github.com:<你的用户名>/nixos-config-template.git
+   cd nixos-config-template
    ```
 
 **选项二：仅本地保存配置库**
 1. 下载并解压配置库：
    ```bash
-   curl -L https://github.com/ShaoG-R/nixos-config/archive/refs/heads/main.tar.gz -o config.tar.gz && \
+   curl -L https://github.com/ShaoG-R/nixos-config-template/archive/refs/heads/main.tar.gz -o config.tar.gz && \
    tar -xzf config.tar.gz && \
    rm config.tar.gz && \
-   mv nixos-config-main nixos-config && \
-   cd nixos-config
+   mv nixos-config-template-main nixos-config-template && \
+   cd nixos-config-template
    ```
 2. 初始化 Git 仓库（Nix Flakes 必须在 Git 仓库中工作）：
    ```bash

@@ -36,7 +36,7 @@ export TARGET_IP=1.2.3.4
 本仓库的 `.github/workflows/release.yml` 会自动构建镜像并发布到 Releases。
 
 - **直链地址 (tohu)**：
-  `https://github.com/ShaoG-R/nixos-config/releases/latest/download/tohu.tar.zst`
+  `https://github.com/ShaoG-R/nixos-config-template/releases/latest/download/tohu.tar.zst`
 
 - **自定义构建**：
   如果你 Fork 了本仓库，请在 Actions 页面手动触发 `Release System Images` 工作流，构建完成后在 Releases 页面获取你的下载直链。
@@ -50,7 +50,7 @@ export TARGET_IP=1.2.3.4
 curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh || wget -O ${_##*/} $_
 
 # 设置镜像直链 (请根据实际情况替换 URL)
-export IMAGE_URL="https://github.com/ShaoG-R/nixos-config/releases/latest/download/tohu.tar.zst"
+export IMAGE_URL="https://github.com/ShaoG-R/nixos-config-template/releases/latest/download/tohu.tar.zst"
 
 # 执行一键 DD
 bash reinstall.sh dd --img "$IMAGE_URL"
@@ -77,10 +77,10 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
 ```bash
 # 下载配置库并解压
-curl -L https://github.com/ShaoG-R/nixos-config/archive/refs/heads/main.tar.gz -o config.tar.gz && \
+curl -L https://github.com/ShaoG-R/nixos-config-template/archive/refs/heads/main.tar.gz -o config.tar.gz && \
 tar -xzf config.tar.gz && \
 rm config.tar.gz && \
-cd nixos-config-main
+cd nixos-config-template-main
 ```
 
 ### 3. 生成硬件配置
@@ -140,10 +140,10 @@ ssh-copy-id root@$TARGET_IP
 
 ```bash
 # 下载并解压配置库
-curl -L https://github.com/ShaoG-R/nixos-config/archive/refs/heads/main.tar.gz -o config.tar.gz && \
+curl -L https://github.com/ShaoG-R/nixos-config-template/archive/refs/heads/main.tar.gz -o config.tar.gz && \
 tar -xzf config.tar.gz && \
 rm config.tar.gz && \
-cd nixos-config-main
+cd nixos-config-template-main
 
 # 使用 nixos-anywhere 远程部署
 # --build-on local: 在本地构建系统闭包，然后上传到服务器（减少服务器负载）
